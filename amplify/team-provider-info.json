@@ -14,6 +14,20 @@
     "categories": {
       "auth": {
         "amplifywebappd37048ac": {}
+      },
+      "api": {
+        "amplifywebapp": {}
+      },
+      "storage": {
+        "RichGatewayDB": {
+          "tableName": "RichGatewayDB",
+          "region": "us-west-1",
+          "arn": "arn:aws:dynamodb:us-west-1:058662443994:table/RichGatewayDB",
+          "partitionKeyName": "device_id",
+          "partitionKeyType": "N",
+          "sortKeyName": "sample_time",
+          "sortKeyType": "N"
+        }
       }
     }
   }

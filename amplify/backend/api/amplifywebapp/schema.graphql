@@ -1,0 +1,5 @@
+type Sample @model @auth(rules: [{allow: public}]) {
+  device_id: ID!
+  sample_time: Float!
+  device_data: AWSJSON
+} 
