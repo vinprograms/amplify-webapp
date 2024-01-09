@@ -236,22 +236,8 @@ const App = ({ signOut }) => {
 				'<TableCell as=\"th\">W3</TableCell>' +
 				'<TableCell as=\"th\">Wt</TableCell>' +
 			'</TableRow>';
-			return (
-				<TableRow>
-					<TableCell as="th">Timestamp</TableCell>
-					<TableCell as="th">V1</TableCell>
-					<TableCell as="th">V2</TableCell>
-					<TableCell as="th">V3</TableCell>
-					<TableCell as="th">I1</TableCell>
-					<TableCell as="th">I2</TableCell>
-					<TableCell as="th">I3</TableCell>
-					<TableCell as="th">In</TableCell>
-					<TableCell as="th">W1</TableCell>
-					<TableCell as="th">W2</TableCell>
-					<TableCell as="th">W3</TableCell>
-					<TableCell as="th">Wt</TableCell>
-				</TableRow>
-			);
+			//return (
+			//);
 	  }
 	  else {
 		  return (	
@@ -302,8 +288,24 @@ const App = ({ signOut }) => {
 							value: 'Tab 1',
 							content: (
 								<Table highlightOnHover variation="bordered">
-									<TableBody>
-									{makeTable(0)}
+									<TableHead>
+										<TableRow>
+											<TableCell as="th">Timestamp</TableCell>
+											<TableCell as="th">V1</TableCell>
+											<TableCell as="th">V2</TableCell>
+											<TableCell as="th">V3</TableCell>
+											<TableCell as="th">I1</TableCell>
+											<TableCell as="th">I2</TableCell>
+											<TableCell as="th">I3</TableCell>
+											<TableCell as="th">In</TableCell>
+											<TableCell as="th">W1</TableCell>
+											<TableCell as="th">W2</TableCell>
+											<TableCell as="th">W3</TableCell>
+											<TableCell as="th">Wt</TableCell>
+										</TableRow>
+									</TableHead>
+									<TableBody id="4287table">
+										{ makeTable(0) }
 									</TableBody>
 								</Table>
 							),
