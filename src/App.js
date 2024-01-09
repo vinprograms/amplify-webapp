@@ -24,13 +24,14 @@ import {
   TableBody,
   Tabs,
   Image,
+  Message,
 } from "@aws-amplify/ui-react";
 import { MdSearch } from 'react-icons/md';
 import { generateClient } from "aws-amplify/api";
 import { listSamples } from "./graphql/queries";
 
-const theme = {
-  name: 'custom-theme',
+const theme: Theme = {
+  name: 'powersight-theme',
   tokens: {
     components: {
 		card: {
@@ -96,6 +97,12 @@ const theme = {
 				fontWeight: { value: '{fontWeights.light}' },
 			},
 		},
+		textfield: {
+			color: { value: '{colors.blue.80}' },
+			_focus: {
+				borderColor: { value: '{colors.red.60}' },
+			},
+		},
 	},
   },
 };
@@ -103,17 +110,17 @@ const theme = {
 const API = generateClient();
 
 const App = ({ signOut }) => {
-  const [samples, setSamples] = useState([]);
+  const [samples, setSamples] = useState([]); // set samples as state variable and tie it to setSamples() function
 
-  useEffect(() => {
+  useEffect(() => { // call fetchSamples() once on render
     fetchSamples();
   }, []);
 
   function parseData(data) {
-	  data = data.replace(/[\"{}]/g, '');
-	  const splitData = data.split(',');
+	  data = data.replace(/[\"{}]/g, ''); // remove special characters that are part of JSON string
+	  const splitData = data.split(','); // tokenize string to create array of measurements
 	  const dataMap = new Map();
-	  splitData.map(data => {
+	  splitData.map(data => { // iterate through tokenized string and create map of <"MEASUREMENT TYPE", VALUE>
 		  if (data.match(/T:/)) {
 			  data = data.replace(/T:/, '');
 			  dataMap.set("T", data);
@@ -166,13 +173,13 @@ const App = ({ signOut }) => {
 	  return dataMap;
   }
   
-  function parseSample(samples, myMap) {
+  function parseSample(samples, myMap) { // create a map of <id, array>
 	  samples.map(sample => {
-		  if (myMap.get(sample.device_id) === undefined) {
+		  if (myMap.get(sample.device_id) === undefined) { // if map doesn't contain meter id yet, initialize with <id, array[map]>
 			const dataArr = [];
-			myMap.set(sample.device_id, dataArr);
+			myMap.set(sample.device_id, dataArr); // elements are of the form <ID, array[map<measurement,data>]>
 		  }
-		  myMap.get(sample.device_id).push(parseData(sample.device_data));
+		  myMap.get(sample.device_id).push(parseData(sample.device_data)); // add map of measurements to map array
 	  });
   }
 
@@ -189,33 +196,111 @@ const App = ({ signOut }) => {
 	}
   }
 
+  function makeTable(id, arrayMap) {
+	  console.log('arrayMap = ', arrayMap);
+  }
+  
+  function validateID(ids) {
+	  try {
+		  ids = ids.replace(/ /g, ''); // remove spaces
+		  ids = ids.split(/,/); // tokenize string to create array of ids
+		  ids.map(id => {
+			  if (samples.get(id) !== undefined) {
+				makeTable(id, samples.get(id));
+				//document.getElementById("search").style.display = "none";
+			  }
+			  else {
+				alert('Failed to find the id you entered. Please check your entry and try again.')
+			  }
+		  });
+	  } catch (error) {
+		  console.log('Error on validating id(s): ', error);
+	  }
+  }
+
   return (
 	<ThemeProvider theme={theme}>
-	<Card style={{margin: "1em"}} variation="outlined">
-		<div className="margin-small header">
-			<Heading level={4}>PowerSight: Remote Monitoring</Heading>
+		<Card style={{margin: "1em"}} variation="outlined">
+			<div className="margin-small header">
+				<Heading level={4}>PowerSight: Remote Monitoring</Heading>
+			</div>
+			<div className="margin-med" id="search">
+				<p>Please enter your meter id(s). Separate by commas for multiple inputs:</p>
+				<Flex>
+					<TextField
+						placeholder="00000, 00001, 00002"
+						onKeyPress={(e) => {
+							if (e.key === 'Enter') {
+							  validateID(e.currentTarget.value);
+							}
+						}}
+						innerEndComponent={
+							<FieldGroupIconButton
+							  ariaLabel="Search"
+							  variation="link"
+							  onClick={() => alert('Still developing, please press enter for now.')}
+							>
+							  <MdSearch />
+							</FieldGroupIconButton>
+						}
+					/>
+				</Flex>
+			</div>
+			<Heading className="margin-small heading-blue" level={4}>Meter ID:</Heading>
+			<Tabs
+				  spacing="equal"
+				  justifyContent="center"
+				  indicatorPosition="top"
+				  defaultValue='Tab 1'
+				  items={[
+					{
+						label: '4287',
+						value: 'Tab 1',
+						content: (
+							<Table highlightOnHover variation="striped">
+								<TableBody>
+								</TableBody>
+							</Table>
+						),
+					},
+					{
+					label: '213',
+					value: 'Tab 2',
+					content: (
+						<Table highlightOnHover variation="striped">
+						  <TableHead>
+							<TableRow>
+							  <TableCell as="th">Device ID</TableCell>
+							  <TableCell as="th">Measurement</TableCell>
+							  <TableCell as="th">Value</TableCell>
+							</TableRow>
+						  </TableHead>
+						  <TableBody>
+							<TableRow>
+							  <TableCell>22</TableCell>
+							  <TableCell>I1</TableCell>
+							  <TableCell>1000</TableCell>
+							</TableRow>
+							<TableRow>
+							  <TableCell>22</TableCell>
+							  <TableCell>I2</TableCell>
+							  <TableCell>2000</TableCell>
+							</TableRow>
+							<TableRow>
+							  <TableCell>22</TableCell>
+							  <TableCell>I3</TableCell>
+							  <TableCell>3000</TableCell>
+							</TableRow>
+						  </TableBody>
+						</Table>
+					),
+				},
+			  ]}
+			/>
+		</Card>
+		<div className="margin-med center">
+			<Button onClick={signOut}>Sign Out</Button>
 		</div>
-		<div className="margin-med">
-			<p>Please enter your meter id(s). Separate by commas for multiple inputs:</p>
-			<Flex>
-				<TextField
-					placeholder="00000, 00001, 00002"
-					innerEndComponent={
-						<FieldGroupIconButton
-						  ariaLabel="Search"
-						  variation="link"
-						  onClick={() => alert('😎')}
-						>
-						  <MdSearch />
-						</FieldGroupIconButton>
-					  }
-				/>
-			</Flex>
-		</div>
-	</Card>
-	<div className="margin-med center">
-		<Button onClick={signOut}>Sign Out</Button>
-	</div>
 	</ThemeProvider>
   );
 };
