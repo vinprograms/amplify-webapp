@@ -262,10 +262,10 @@ const App = ({ signOut }) => {
 
   return (
 	<ThemeProvider theme={theme}>
-		<Card style={{margin: "1em"}} variation="outlined">
-			<div className="margin-small header">
-				<Heading level={4}>PowerSight: Remote Monitoring</Heading>
-			</div>
+		<div className="margin-page">
+			<Heading level={4}>PowerSight: Remote Monitoring</Heading>
+		</div>
+		<Card className="margin-page" variation="outlined">
 			<div className="margin-med" id="search">
 				<p>Please enter your meter id(s). Separate by commas for multiple inputs:</p>
 				<Flex>
