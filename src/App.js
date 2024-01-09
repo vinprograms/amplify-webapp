@@ -220,7 +220,7 @@ const App = ({ signOut }) => {
 
   function makeTable(table) {
 	  if (table == 0) {
-			console.log("samples", samples.get("4287"));
+			//console.log("samples", samples.get("4287"));
 			var tableHTML =
 			'<TableRow>' +
 				'<TableCell as=\"th\">Timestamp</TableCell>' +
@@ -266,8 +266,9 @@ const App = ({ signOut }) => {
 			<Heading level={4}>PowerSight: Remote Monitoring</Heading>
 		</div>
 		<Card className="margin-page" variation="outlined">
-			<div className="margin-med" id="search">
-				<p>Please enter your meter id(s). Separate by commas for multiple inputs:</p>
+			<div className="margin-small" id="search">
+				<Heading className="heading-blue" level={4}>Search:</Heading>
+				<p className="margin-small">Please enter your meter id(s). Separate by commas for multiple inputs:</p>
 				<Flex>
 					<TextField
 						placeholder="00000, 00001, 00002"
@@ -288,58 +289,60 @@ const App = ({ signOut }) => {
 					/>
 				</Flex>
 			</div>
-			<Heading className="margin-small heading-blue" level={4}>Meter ID:</Heading>
-			<Tabs
-				  spacing="equal"
-				  justifyContent="center"
-				  indicatorPosition="top"
-				  defaultValue='Tab 1'
-				  items={[
-					{
-						label: '4287',
-						value: 'Tab 1',
+			<div className="margin-med">
+				<Heading className="heading-blue" level={4}>Meter ID:</Heading>
+				<Tabs
+					  spacing="equal"
+					  justifyContent="center"
+					  indicatorPosition="top"
+					  defaultValue='Tab 1'
+					  items={[
+						{
+							label: '4287',
+							value: 'Tab 1',
+							content: (
+								<Table highlightOnHover variation="bordered">
+									<TableBody>
+									{makeTable(0)}
+									</TableBody>
+								</Table>
+							),
+						},
+						{
+						label: '213',
+						value: 'Tab 2',
 						content: (
-							<Table highlightOnHover variation="bordered">
-								<TableBody>
-								{makeTable(0)}
-								</TableBody>
+							<Table highlightOnHover variation="striped">
+							  <TableHead>
+								<TableRow>
+								  <TableCell as="th">Device ID</TableCell>
+								  <TableCell as="th">Measurement</TableCell>
+								  <TableCell as="th">Value</TableCell>
+								</TableRow>
+							  </TableHead>
+							  <TableBody>
+								<TableRow>
+								  <TableCell>22</TableCell>
+								  <TableCell>I1</TableCell>
+								  <TableCell>1000</TableCell>
+								</TableRow>
+								<TableRow>
+								  <TableCell>22</TableCell>
+								  <TableCell>I2</TableCell>
+								  <TableCell>2000</TableCell>
+								</TableRow>
+								<TableRow>
+								  <TableCell>22</TableCell>
+								  <TableCell>I3</TableCell>
+								  <TableCell>3000</TableCell>
+								</TableRow>
+							  </TableBody>
 							</Table>
 						),
 					},
-					{
-					label: '213',
-					value: 'Tab 2',
-					content: (
-						<Table highlightOnHover variation="striped">
-						  <TableHead>
-							<TableRow>
-							  <TableCell as="th">Device ID</TableCell>
-							  <TableCell as="th">Measurement</TableCell>
-							  <TableCell as="th">Value</TableCell>
-							</TableRow>
-						  </TableHead>
-						  <TableBody>
-							<TableRow>
-							  <TableCell>22</TableCell>
-							  <TableCell>I1</TableCell>
-							  <TableCell>1000</TableCell>
-							</TableRow>
-							<TableRow>
-							  <TableCell>22</TableCell>
-							  <TableCell>I2</TableCell>
-							  <TableCell>2000</TableCell>
-							</TableRow>
-							<TableRow>
-							  <TableCell>22</TableCell>
-							  <TableCell>I3</TableCell>
-							  <TableCell>3000</TableCell>
-							</TableRow>
-						  </TableBody>
-						</Table>
-					),
-				},
-			  ]}
-			/>
+				  ]}
+				/>
+			</div>
 		</Card>
 		<div className="margin-med center">
 			<Button onClick={signOut}>Sign Out</Button>
