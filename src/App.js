@@ -218,6 +218,48 @@ const App = ({ signOut }) => {
 	  }
   }
 
+  function makeTable(table) {
+	  if (table == 0) {
+			console.log("samples", samples.get("4287"));
+			var tableHTML =
+			'<TableRow>' +
+				'<TableCell as=\"th\">Timestamp</TableCell>' +
+				'<TableCell as=\"th\">V1</TableCell>' +
+				'<TableCell as=\"th\">V2</TableCell>' +
+				'<TableCell as=\"th\">V3</TableCell>' +
+				'<TableCell as=\"th\">I1</TableCell>' +
+				'<TableCell as=\"th\">I2</TableCell>' +
+				'<TableCell as=\"th\">I3</TableCell>' +
+				'<TableCell as=\"th\">In</TableCell>' +
+				'<TableCell as=\"th\">W1</TableCell>' +
+				'<TableCell as=\"th\">W2</TableCell>' +
+				'<TableCell as=\"th\">W3</TableCell>' +
+				'<TableCell as=\"th\">Wt</TableCell>' +
+			'</TableRow>';
+			return (
+				<TableRow>
+					<TableCell as="th">Timestamp</TableCell>
+					<TableCell as="th">V1</TableCell>
+					<TableCell as="th">V2</TableCell>
+					<TableCell as="th">V3</TableCell>
+					<TableCell as="th">I1</TableCell>
+					<TableCell as="th">I2</TableCell>
+					<TableCell as="th">I3</TableCell>
+					<TableCell as="th">In</TableCell>
+					<TableCell as="th">W1</TableCell>
+					<TableCell as="th">W2</TableCell>
+					<TableCell as="th">W3</TableCell>
+					<TableCell as="th">Wt</TableCell>
+				</TableRow>
+			);
+	  }
+	  else {
+		  return (	
+				<p>id not found</p>
+			)
+	  }
+  }
+
   return (
 	<ThemeProvider theme={theme}>
 		<Card style={{margin: "1em"}} variation="outlined">
@@ -257,8 +299,9 @@ const App = ({ signOut }) => {
 						label: '4287',
 						value: 'Tab 1',
 						content: (
-							<Table highlightOnHover variation="striped">
+							<Table highlightOnHover variation="bordered">
 								<TableBody>
+								{makeTable(0)}
 								</TableBody>
 							</Table>
 						),
