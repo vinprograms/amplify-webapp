@@ -9,7 +9,7 @@ export const createSample = /* GraphQL */ `
     createSample(input: $input, condition: $condition) {
       device_id
       sample_time
-      data
+      device_data
       id
       createdAt
       updatedAt
@@ -25,7 +25,7 @@ export const updateSample = /* GraphQL */ `
     updateSample(input: $input, condition: $condition) {
       device_id
       sample_time
-      data
+      device_data
       id
       createdAt
       updatedAt
@@ -41,7 +41,7 @@ export const deleteSample = /* GraphQL */ `
     deleteSample(input: $input, condition: $condition) {
       device_id
       sample_time
-      data
+      device_data
       id
       createdAt
       updatedAt

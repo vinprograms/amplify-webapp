@@ -33,13 +33,15 @@ export default function SampleUpdateForm(props) {
   const initialValues = {
     device_id: "",
     sample_time: "",
-    data: "",
+    device_data: "",
   };
   const [device_id, setDevice_id] = React.useState(initialValues.device_id);
   const [sample_time, setSample_time] = React.useState(
     initialValues.sample_time
   );
-  const [data, setData] = React.useState(initialValues.data);
+  const [device_data, setDevice_data] = React.useState(
+    initialValues.device_data
+  );
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = sampleRecord
@@ -47,10 +49,11 @@ export default function SampleUpdateForm(props) {
       : initialValues;
     setDevice_id(cleanValues.device_id);
     setSample_time(cleanValues.sample_time);
-    setData(
-      typeof cleanValues.data === "string" || cleanValues.data === null
-        ? cleanValues.data
-        : JSON.stringify(cleanValues.data)
+    setDevice_data(
+      typeof cleanValues.device_data === "string" ||
+        cleanValues.device_data === null
+        ? cleanValues.device_data
+        : JSON.stringify(cleanValues.device_data)
     );
     setErrors({});
   };
@@ -73,7 +76,7 @@ export default function SampleUpdateForm(props) {
   const validations = {
     device_id: [{ type: "Required" }],
     sample_time: [{ type: "Required" }],
-    data: [{ type: "JSON" }],
+    device_data: [{ type: "JSON" }],
   };
   const runValidationTasks = async (
     fieldName,
@@ -103,7 +106,7 @@ export default function SampleUpdateForm(props) {
         let modelFields = {
           device_id,
           sample_time,
-          data: data ?? null,
+          device_data: device_data ?? null,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -166,7 +169,7 @@ export default function SampleUpdateForm(props) {
             const modelFields = {
               device_id: value,
               sample_time,
-              data,
+              device_data,
             };
             const result = onChange(modelFields);
             value = result?.device_id ?? value;
@@ -196,7 +199,7 @@ export default function SampleUpdateForm(props) {
             const modelFields = {
               device_id,
               sample_time: value,
-              data,
+              device_data,
             };
             const result = onChange(modelFields);
             value = result?.sample_time ?? value;
@@ -212,30 +215,30 @@ export default function SampleUpdateForm(props) {
         {...getOverrideProps(overrides, "sample_time")}
       ></TextField>
       <TextAreaField
-        label="Data"
+        label="Device data"
         isRequired={false}
         isReadOnly={false}
-        value={data}
+        value={device_data}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
               device_id,
               sample_time,
-              data: value,
+              device_data: value,
             };
             const result = onChange(modelFields);
-            value = result?.data ?? value;
+            value = result?.device_data ?? value;
           }
-          if (errors.data?.hasError) {
-            runValidationTasks("data", value);
+          if (errors.device_data?.hasError) {
+            runValidationTasks("device_data", value);
           }
-          setData(value);
+          setDevice_data(value);
         }}
-        onBlur={() => runValidationTasks("data", data)}
-        errorMessage={errors.data?.errorMessage}
-        hasError={errors.data?.hasError}
-        {...getOverrideProps(overrides, "data")}
+        onBlur={() => runValidationTasks("device_data", device_data)}
+        errorMessage={errors.device_data?.errorMessage}
+        hasError={errors.device_data?.hasError}
+        {...getOverrideProps(overrides, "device_data")}
       ></TextAreaField>
       <Flex
         justifyContent="space-between"

@@ -1,17 +1,17 @@
-import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
+import "./App.css";
 import {
 	React,
 	useState,
 	useEffect
 } from "react";
-import { generateClient } from "aws-amplify/api";
 import {
   Button,
   Flex,
   Heading,
   Text,
   TextField,
+  FieldGroupIconButton,
   View,
   withAuthenticator,
   ThemeProvider,
@@ -25,6 +25,8 @@ import {
   Tabs,
   Image,
 } from "@aws-amplify/ui-react";
+import { MdSearch } from 'react-icons/md';
+import { generateClient } from "aws-amplify/api";
 import { listSamples } from "./graphql/queries";
 
 const theme = {
@@ -107,46 +109,129 @@ const App = ({ signOut }) => {
     fetchSamples();
   }, []);
 
+  function parseData(data) {
+	  data = data.replace(/[\"{}]/g, '');
+	  const splitData = data.split(',');
+	  const dataMap = new Map();
+	  splitData.map(data => {
+		  if (data.match(/T:/)) {
+			  data = data.replace(/T:/, '');
+			  dataMap.set("T", data);
+		  }
+		  else if (data.match(/V1:/)) {
+			  data = data.replace(/V1:/, '');
+			  dataMap.set("V1", data);
+		  }
+		  else if (data.match(/V2:/)) {
+			  data = data.replace(/V2:/, '');
+			  dataMap.set("V2", data);
+		  }
+		  else if (data.match(/V3:/)) {
+			  data = data.replace(/V3:/, '');
+			  dataMap.set("V3", data);
+		  }
+		  else if (data.match(/I1:/)) {
+			  data = data.replace(/I1:/, '');
+			  dataMap.set("I1", data);
+		  }
+		  else if (data.match(/I2:/)) {
+			  data = data.replace(/I2:/, '');
+			  dataMap.set("I2", data);
+		  }
+		  else if (data.match(/I3:/)) {
+			  data = data.replace(/I3:/, '');
+			  dataMap.set("I3", data);
+		  }
+		  else if (data.match(/In:/i)) {
+			  data = data.replace(/In:/i, '');
+			  dataMap.set("In", data);
+		  }
+		  else if (data.match(/W1:/)) {
+			  data = data.replace(/W1:/, '');
+			  dataMap.set("W1", data);
+		  }
+		  else if (data.match(/W2:/)) {
+			  data = data.replace(/W2:/, '');
+			  dataMap.set("W2", data);
+		  }
+		  else if (data.match(/W3:/)) {
+			  data = data.replace(/W3:/, '');
+			  dataMap.set("W3", data);
+		  }
+		  else if (data.match(/Wt:/)) {
+			  data = data.replace(/Wt:/, '');
+			  dataMap.set("Wt", data);
+		  }
+	  });
+	  return dataMap;
+  }
+  
+  function parseSample(samples, myMap) {
+	  samples.map(sample => {
+		  if (myMap.get(sample.device_id) === undefined) {
+			const dataArr = [];
+			myMap.set(sample.device_id, dataArr);
+		  }
+		  myMap.get(sample.device_id).push(parseData(sample.device_data));
+	  });
+  }
+
   async function fetchSamples() {
 	try {
 		const apiData = await API.graphql({ query: listSamples });
 		const samplesFromAPI = apiData.data.listSamples.items;
-		console.log('sample list', samplesFromAPI);
-		setSamples(samplesFromAPI);
+		const sampleMap = new Map();
+		parseSample(samplesFromAPI, sampleMap);
+		setSamples(sampleMap);
+		console.log("Samples parsed successfully", samples);
 	} catch (error) {
-		console.log('error on fetching samples', error);
+		console.log('Error on fetching samples: ', error);
 	}
   }
 
   return (
-    /*<View className="App">
-      <Heading level={1}>My App</Heading>
-      <Heading level={2}>Data</Heading>
-      <View margin="3rem 0">
-        {samples.map((sample) => (
-          <Flex
-            key={sample.device_id}
-            direction="row"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Text as="strong" fontWeight={700}>
-              {sample.device_id}
-            </Text>
-            <Text as="span">{sample.sample_time}</Text>
-          </Flex>
-        ))}
-      </View>
-      <Button onClick={signOut}>Sign Out</Button>
-    </View>*/
 	<ThemeProvider theme={theme}>
-		<Card variation="outlined">
-			<div className="margin-small">
-				<Heading level={4}>PowerSight: Remote Monitoring</Heading>
-				<Heading className="heading-blue" level={4}>Measurements</Heading>
-			</div>
-			<div>
-				<Tabs
+	<Card style={{margin: "1em"}} variation="outlined">
+		<div className="margin-small header">
+			<Heading level={4}>PowerSight: Remote Monitoring</Heading>
+		</div>
+		<div className="margin-med">
+			<p>Please enter your meter id(s). Separate by commas for multiple inputs:</p>
+			<Flex>
+				<TextField
+					placeholder="00000, 00001, 00002"
+					innerEndComponent={
+						<FieldGroupIconButton
+						  ariaLabel="Search"
+						  variation="link"
+						  onClick={() => alert('😎')}
+						>
+						  <MdSearch />
+						</FieldGroupIconButton>
+					  }
+				/>
+			</Flex>
+		</div>
+	</Card>
+	<div className="margin-med center">
+		<Button onClick={signOut}>Sign Out</Button>
+	</div>
+	</ThemeProvider>
+  );
+};
+
+export default withAuthenticator(App);
+
+/***TUTORIALS:
+https://aws.amazon.com/getting-started/hands-on/build-react-app-amplify-graphql
+https://docs.aws.amazon.com/appsync/latest/devguide/scalars.html
+***/
+
+/*
+
+<Heading className="heading-blue" level={4}>Measurements</Heading>
+
+<Tabs
 				  spacing="equal"
 				  justifyContent="center"
 				  indicatorPosition="top"
@@ -207,19 +292,4 @@ const App = ({ signOut }) => {
 					{ label: 'THD', value: 'Tab 4', content: 'Tab content #4', isDisabled: true },
 					{ label: 'Phasors', value: 'Tab 5', content: 'Tab content #5', isDisabled: true },
 				  ]}
-				/>
-			</div>
-		</Card>
-		<div>
-			<Button onClick={signOut}>Sign Out</Button>
-		</div>
-	</ThemeProvider>
-  );
-};
-
-export default withAuthenticator(App);
-
-/***TUTORIALS:
-https://aws.amazon.com/getting-started/hands-on/build-react-app-amplify-graphql
-https://docs.aws.amazon.com/appsync/latest/devguide/scalars.html
-***/
+				/>*/

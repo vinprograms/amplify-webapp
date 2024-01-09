@@ -24,19 +24,19 @@ export declare type ValidationFunction<T> = (value: T, validationResponse: Valid
 export declare type SampleCreateFormInputValues = {
     device_id?: string;
     sample_time?: number;
-    data?: string;
+    device_data?: string;
 };
 export declare type SampleCreateFormValidationValues = {
     device_id?: ValidationFunction<string>;
     sample_time?: ValidationFunction<number>;
-    data?: ValidationFunction<string>;
+    device_data?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type SampleCreateFormOverridesProps = {
     SampleCreateFormGrid?: PrimitiveOverrideProps<GridProps>;
     device_id?: PrimitiveOverrideProps<TextFieldProps>;
     sample_time?: PrimitiveOverrideProps<TextFieldProps>;
-    data?: PrimitiveOverrideProps<TextAreaFieldProps>;
+    device_data?: PrimitiveOverrideProps<TextAreaFieldProps>;
 } & EscapeHatchProps;
 export declare type SampleCreateFormProps = React.PropsWithChildren<{
     overrides?: SampleCreateFormOverridesProps | undefined | null;
