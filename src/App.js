@@ -111,6 +111,10 @@ const API = generateClient();
 
 const App = ({ signOut }) => {
   const [samples, setSamples] = useState([]); // set samples as state variable and tie it to setSamples() function
+	
+  const [showTables, setShowTables] = useState(false);
+  
+  const [validIds, setIds] = useState([]);
 
   useEffect(() => { // call fetchSamples() once on render
     fetchSamples();
@@ -189,70 +193,144 @@ const App = ({ signOut }) => {
 		const samplesFromAPI = apiData.data.listSamples.items;
 		const sampleMap = new Map();
 		parseSample(samplesFromAPI, sampleMap);
+		console.log("samples = ", sampleMap);
 		setSamples(sampleMap);
-		console.log("Samples parsed successfully", samples);
 	} catch (error) {
 		console.log('Error on fetching samples: ', error);
 	}
   }
 
-  function makeTable(id, arrayMap) {
-	  console.log('arrayMap = ', arrayMap);
-  }
-  
-  function validateID(ids) {
+  function validateId(ids) {
 	  try {
 		  ids = ids.replace(/ /g, ''); // remove spaces
 		  ids = ids.split(/,/); // tokenize string to create array of ids
+		  let myHTML = '';
+		  let myArr = [];
+		  let match = false;
 		  ids.map(id => {
 			  if (samples.get(id) !== undefined) {
-				makeTable(id, samples.get(id));
-				//document.getElementById("search").style.display = "none";
+				match = true;
+				setShowTables(true); // check to see if we have a match first, so we can make container for tables
+				myArr.push(id);
 			  }
 			  else {
 				alert('Failed to find the id you entered. Please check your entry and try again.')
+			  }
+			  if (match) {
+				  setIds(myArr); // store the valid ids in state
 			  }
 		  });
 	  } catch (error) {
 		  console.log('Error on validating id(s): ', error);
 	  }
   }
-
-  function makeTable(table) {
-	  if (table == 0) {
-			//console.log("samples", samples.get("4287"));
-			var tableHTML =
-			'<TableRow>' +
-				'<TableCell as=\"th\">Timestamp</TableCell>' +
-				'<TableCell as=\"th\">V1</TableCell>' +
-				'<TableCell as=\"th\">V2</TableCell>' +
-				'<TableCell as=\"th\">V3</TableCell>' +
-				'<TableCell as=\"th\">I1</TableCell>' +
-				'<TableCell as=\"th\">I2</TableCell>' +
-				'<TableCell as=\"th\">I3</TableCell>' +
-				'<TableCell as=\"th\">In</TableCell>' +
-				'<TableCell as=\"th\">W1</TableCell>' +
-				'<TableCell as=\"th\">W2</TableCell>' +
-				'<TableCell as=\"th\">W3</TableCell>' +
-				'<TableCell as=\"th\">Wt</TableCell>' +
-			'</TableRow>';
-			//return (
-			//);
-	  }
-	  else {
-		  return (	
-				<p>id not found</p>
-			)
-	  }
+  
+	function makeTables(id) {
+		return (
+			<Table highlightOnHover variation="bordered">
+				<TableHead>
+					<TableRow>
+						<TableCell as="th">Time</TableCell>
+						<TableCell as="th">V1</TableCell>
+						<TableCell as="th">V2</TableCell>
+						<TableCell as="th">V3</TableCell>
+						<TableCell as="th">I1</TableCell>
+						<TableCell as="th">I2</TableCell>
+						<TableCell as="th">I3</TableCell>
+						<TableCell as="th">In</TableCell>
+						<TableCell as="th">W1</TableCell>
+						<TableCell as="th">W2</TableCell>
+						<TableCell as="th">W3</TableCell>
+						<TableCell as="th">Wt</TableCell>
+					</TableRow>
+				</TableHead>
+				<TableBody>
+				{
+					samples.get(id).map(sample => {
+						return (
+							<TableRow>
+								<TableCell>
+								{sample.get("T")}
+								</TableCell>
+								<TableCell>
+								{sample.get("V1")}
+								</TableCell>
+								<TableCell>
+								{sample.get("V2")}
+								</TableCell>
+								<TableCell>
+								{sample.get("V3")}
+								</TableCell>
+								<TableCell>
+								{sample.get("I1")}
+								</TableCell>
+								<TableCell>
+								{sample.get("I2")}
+								</TableCell>
+								<TableCell>
+								{sample.get("I3")}
+								</TableCell>
+								<TableCell>
+								{sample.get("In")}
+								</TableCell>
+								<TableCell>
+								{sample.get("W1")}
+								</TableCell>
+								<TableCell>
+								{sample.get("W2")}
+								</TableCell>
+								<TableCell>
+								{sample.get("W3")}
+								</TableCell>
+								<TableCell>
+								{sample.get("Wt")}
+								</TableCell>
+							</TableRow>
+						)
+					})
+				}
+				</TableBody>
+			</Table>
+		)
+	}
+  
+  function makeTabs() {
+	  return (
+		<div className="margin-med">
+			<Heading className="heading-blue" level={4}>Meter ID:</Heading>
+			<Tabs.Container defaultValue="Tab 0" isLazy>
+				<Tabs.List spacing="equal" justifyContent="center" indicatorPosition="top">
+					{
+						validIds.map((id, i) => {
+							return (
+								<Tabs.Item value={'Tab ' + i} key={i}>
+									{id}
+								</Tabs.Item>
+							)
+						})
+					}
+				  </Tabs.List>
+					{
+						validIds.map((id, i) => {
+							return (
+								<Tabs.Panel value={'Tab ' + i} key={i}>
+									{makeTables(id)}
+								</Tabs.Panel>
+							)
+						})
+					}
+			</Tabs.Container>
+		</div>
+	  );
   }
-
+  
   return (
 	<ThemeProvider theme={theme}>
 		<div className="margin-page">
 			<Heading level={4}>PowerSight: Remote Monitoring</Heading>
 		</div>
 		<Card className="margin-page" variation="outlined">
-			<div className="margin-small" id="search">
+			<div className="margin-small">
 				<Heading className="heading-blue" level={4}>Search:</Heading>
 				<p className="margin-small">Please enter your meter id(s). Separate by commas for multiple inputs:</p>
 				<Flex>
@@ -260,7 +338,7 @@ const App = ({ signOut }) => {
 						placeholder="00000, 00001, 00002"
 						onKeyPress={(e) => {
 							if (e.key === 'Enter') {
-							  validateID(e.currentTarget.value);
+							    validateId(e.currentTarget.value);
 							}
 						}}
 						innerEndComponent={
@@ -275,7 +353,44 @@ const App = ({ signOut }) => {
 					/>
 				</Flex>
 			</div>
-			<div className="margin-med">
+		    {
+				showTables && validIds.length && makeTabs()
+			}
+		</Card>
+		<div className="margin-med center">
+			<Button onClick={signOut}>Sign Out</Button>
+		</div>
+	</ThemeProvider>
+  );
+};
+
+export default withAuthenticator(App);
+
+/***TUTORIALS:
+https://aws.amazon.com/getting-started/hands-on/build-react-app-amplify-graphql
+https://docs.aws.amazon.com/appsync/latest/devguide/scalars.html
+https://ui.docs.amplify.aws/react/components/textfield
+https://ui.docs.amplify.aws/react/components/tabs
+https://stackoverflow.com/questions/69476529/way-to-render-a-new-component-onclick-in-react-js
+https://www.youtube.com/watch?v=1TYObnD0RCA React Tutorial #4 - Dynamically Rendering Multiple Components
+https://sentry.io/answers/unique-key-prop/
+***/
+
+/***
+
+innerEndComponent={
+							<FieldGroupIconButton
+							  ariaLabel="Search"
+							  variation="link"
+							  onClick={() => alert('Still developing, please press enter for now.')}
+							>
+							  <MdSearch />
+							</FieldGroupIconButton>
+						}
+
+<Heading className="heading-blue" level={4}>Measurements</Heading>
+	
+<div className="margin-med">
 				<Heading className="heading-blue" level={4}>Meter ID:</Heading>
 				<Tabs
 					  spacing="equal"
@@ -305,7 +420,7 @@ const App = ({ signOut }) => {
 										</TableRow>
 									</TableHead>
 									<TableBody id="4287table">
-										{ makeTable(0) }
+										
 									</TableBody>
 								</Table>
 							),
@@ -344,85 +459,7 @@ const App = ({ signOut }) => {
 					},
 				  ]}
 				/>
-			</div>
-		</Card>
-		<div className="margin-med center">
-			<Button onClick={signOut}>Sign Out</Button>
-		</div>
-	</ThemeProvider>
-  );
-};
-
-export default withAuthenticator(App);
-
-/***TUTORIALS:
-https://aws.amazon.com/getting-started/hands-on/build-react-app-amplify-graphql
-https://docs.aws.amazon.com/appsync/latest/devguide/scalars.html
+			</div>				
+				
+				
 ***/
-
-/*
-
-<Heading className="heading-blue" level={4}>Measurements</Heading>
-
-<Tabs
-				  spacing="equal"
-				  justifyContent="center"
-				  indicatorPosition="top"
-				  defaultValue='Tab 1'
-				  items={[
-					{
-						label: 'Voltage',
-						value: 'Tab 1',
-						content: (
-							<Table highlightOnHover variation="striped">
-								<TableBody>
-								{samples.map((sample) => {
-									return (	
-										<TableRow key={sample.device_id}>
-											<TableCell>{sample.device_id}</TableCell>
-											<TableCell>{sample.sample_time}</TableCell>
-											<TableCell>{sample.device_data}</TableCell>
-										</TableRow>
-									)
-								})}
-								</TableBody>
-							</Table>
-						),
-					},
-					{
-						label: 'Current',
-						value: 'Tab 2',
-						content: (
-							<Table highlightOnHover variation="striped">
-							  <TableHead>
-								<TableRow>
-								  <TableCell as="th">Device ID</TableCell>
-								  <TableCell as="th">Measurement</TableCell>
-								  <TableCell as="th">Value</TableCell>
-								</TableRow>
-							  </TableHead>
-							  <TableBody>
-								<TableRow>
-								  <TableCell>22</TableCell>
-								  <TableCell>I1</TableCell>
-								  <TableCell>1000</TableCell>
-								</TableRow>
-								<TableRow>
-								  <TableCell>22</TableCell>
-								  <TableCell>I2</TableCell>
-								  <TableCell>2000</TableCell>
-								</TableRow>
-								<TableRow>
-								  <TableCell>22</TableCell>
-								  <TableCell>I3</TableCell>
-								  <TableCell>3000</TableCell>
-								</TableRow>
-							  </TableBody>
-							</Table>
-						),
-					},
-					{ label: 'Power', value: 'Tab 3', content: 'Tab content #3' },
-					{ label: 'THD', value: 'Tab 4', content: 'Tab content #4', isDisabled: true },
-					{ label: 'Phasors', value: 'Tab 5', content: 'Tab content #5', isDisabled: true },
-				  ]}
-				/>*/
