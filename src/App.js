@@ -227,70 +227,77 @@ const App = ({ signOut }) => {
   
 	function makeTables(id) {
 		return (
-			<Table highlightOnHover variation="bordered">
-				<TableHead>
-					<TableRow>
-						<TableCell as="th">Time</TableCell>
-						<TableCell as="th">V1</TableCell>
-						<TableCell as="th">V2</TableCell>
-						<TableCell as="th">V3</TableCell>
-						<TableCell as="th">I1</TableCell>
-						<TableCell as="th">I2</TableCell>
-						<TableCell as="th">I3</TableCell>
-						<TableCell as="th">In</TableCell>
-						<TableCell as="th">W1</TableCell>
-						<TableCell as="th">W2</TableCell>
-						<TableCell as="th">W3</TableCell>
-						<TableCell as="th">Wt</TableCell>
-					</TableRow>
-				</TableHead>
-				<TableBody>
-				{
-					samples.get(id).map(sample => {
-						return (
-							<TableRow>
-								<TableCell>
-								{sample.get("T")}
-								</TableCell>
-								<TableCell>
-								{sample.get("V1")}
-								</TableCell>
-								<TableCell>
-								{sample.get("V2")}
-								</TableCell>
-								<TableCell>
-								{sample.get("V3")}
-								</TableCell>
-								<TableCell>
-								{sample.get("I1")}
-								</TableCell>
-								<TableCell>
-								{sample.get("I2")}
-								</TableCell>
-								<TableCell>
-								{sample.get("I3")}
-								</TableCell>
-								<TableCell>
-								{sample.get("In")}
-								</TableCell>
-								<TableCell>
-								{sample.get("W1")}
-								</TableCell>
-								<TableCell>
-								{sample.get("W2")}
-								</TableCell>
-								<TableCell>
-								{sample.get("W3")}
-								</TableCell>
-								<TableCell>
-								{sample.get("Wt")}
-								</TableCell>
-							</TableRow>
-						)
-					})
-				}
-				</TableBody>
-			</Table>
+			<div>
+				<p>Total number of samples: {samples.get(id).length}</p>
+				<Table highlightOnHover variation="bordered">
+					<TableHead>
+						<TableRow>
+							<TableCell as="th">Sample</TableCell>
+							<TableCell as="th">Time</TableCell>
+							<TableCell as="th">V1</TableCell>
+							<TableCell as="th">V2</TableCell>
+							<TableCell as="th">V3</TableCell>
+							<TableCell as="th">I1</TableCell>
+							<TableCell as="th">I2</TableCell>
+							<TableCell as="th">I3</TableCell>
+							<TableCell as="th">In</TableCell>
+							<TableCell as="th">W1</TableCell>
+							<TableCell as="th">W2</TableCell>
+							<TableCell as="th">W3</TableCell>
+							<TableCell as="th">Wt</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+					{
+						samples.get(id).map((sample, i) => {
+							return (
+								<TableRow>
+									<TableCell>
+									{i+1}
+									</TableCell>
+									<TableCell>
+									{sample.get("T")}
+									</TableCell>
+									<TableCell>
+									{sample.get("V1")}
+									</TableCell>
+									<TableCell>
+									{sample.get("V2")}
+									</TableCell>
+									<TableCell>
+									{sample.get("V3")}
+									</TableCell>
+									<TableCell>
+									{sample.get("I1")}
+									</TableCell>
+									<TableCell>
+									{sample.get("I2")}
+									</TableCell>
+									<TableCell>
+									{sample.get("I3")}
+									</TableCell>
+									<TableCell>
+									{sample.get("In")}
+									</TableCell>
+									<TableCell>
+									{sample.get("W1")}
+									</TableCell>
+									<TableCell>
+									{sample.get("W2")}
+									</TableCell>
+									<TableCell>
+									{sample.get("W3")}
+									</TableCell>
+									<TableCell>
+									{sample.get("Wt")}
+									</TableCell>
+								</TableRow>
+							)
+						})
+					}
+					</TableBody>
+				</Table>
+			</div>
 		)
 	}
   
