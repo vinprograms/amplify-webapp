@@ -189,7 +189,7 @@ const App = ({ signOut }) => {
 
   async function fetchSamples() {
 	try {
-		const apiData = await API.graphql({ query: listSamples });
+		const apiData = await API.graphql({ query: listSamples }, {limit: 1000});
 		const samplesFromAPI = apiData.data.listSamples.items;
 		const sampleMap = new Map();
 		parseSample(samplesFromAPI, sampleMap);
@@ -228,6 +228,8 @@ const App = ({ signOut }) => {
 	function makeTables(id) {
 		return (
 			<div>
+				<p>Status: TBD</p>
+				<p>Location: TBD</p>
 				<p>Total number of samples: {samples.get(id).length}</p>
 				<Table highlightOnHover variation="bordered">
 					<TableHead>
@@ -373,7 +375,8 @@ const App = ({ signOut }) => {
 
 export default withAuthenticator(App);
 
-/***TUTORIALS:
+/***
+TUTORIALS:
 https://aws.amazon.com/getting-started/hands-on/build-react-app-amplify-graphql
 https://docs.aws.amazon.com/appsync/latest/devguide/scalars.html
 https://ui.docs.amplify.aws/react/components/textfield
@@ -381,92 +384,18 @@ https://ui.docs.amplify.aws/react/components/tabs
 https://stackoverflow.com/questions/69476529/way-to-render-a-new-component-onclick-in-react-js
 https://www.youtube.com/watch?v=1TYObnD0RCA React Tutorial #4 - Dynamically Rendering Multiple Components
 https://sentry.io/answers/unique-key-prop/
+https://stackoverflow.com/questions/31284169/parse-error-adjacent-jsx-elements-must-be-wrapped-in-an-enclosing-tag
 ***/
 
 /***
 
 innerEndComponent={
-							<FieldGroupIconButton
-							  ariaLabel="Search"
-							  variation="link"
-							  onClick={() => alert('Still developing, please press enter for now.')}
-							>
-							  <MdSearch />
-							</FieldGroupIconButton>
-						}
-
-<Heading className="heading-blue" level={4}>Measurements</Heading>
-	
-<div className="margin-med">
-				<Heading className="heading-blue" level={4}>Meter ID:</Heading>
-				<Tabs
-					  spacing="equal"
-					  justifyContent="center"
-					  indicatorPosition="top"
-					  defaultValue='Tab 1'
-					  items={[
-						{
-							label: '4287',
-							value: 'Tab 1',
-							content: (
-								<Table highlightOnHover variation="bordered">
-									<TableHead>
-										<TableRow>
-											<TableCell as="th">Timestamp</TableCell>
-											<TableCell as="th">V1</TableCell>
-											<TableCell as="th">V2</TableCell>
-											<TableCell as="th">V3</TableCell>
-											<TableCell as="th">I1</TableCell>
-											<TableCell as="th">I2</TableCell>
-											<TableCell as="th">I3</TableCell>
-											<TableCell as="th">In</TableCell>
-											<TableCell as="th">W1</TableCell>
-											<TableCell as="th">W2</TableCell>
-											<TableCell as="th">W3</TableCell>
-											<TableCell as="th">Wt</TableCell>
-										</TableRow>
-									</TableHead>
-									<TableBody id="4287table">
-										
-									</TableBody>
-								</Table>
-							),
-						},
-						{
-						label: '213',
-						value: 'Tab 2',
-						content: (
-							<Table highlightOnHover variation="striped">
-							  <TableHead>
-								<TableRow>
-								  <TableCell as="th">Device ID</TableCell>
-								  <TableCell as="th">Measurement</TableCell>
-								  <TableCell as="th">Value</TableCell>
-								</TableRow>
-							  </TableHead>
-							  <TableBody>
-								<TableRow>
-								  <TableCell>22</TableCell>
-								  <TableCell>I1</TableCell>
-								  <TableCell>1000</TableCell>
-								</TableRow>
-								<TableRow>
-								  <TableCell>22</TableCell>
-								  <TableCell>I2</TableCell>
-								  <TableCell>2000</TableCell>
-								</TableRow>
-								<TableRow>
-								  <TableCell>22</TableCell>
-								  <TableCell>I3</TableCell>
-								  <TableCell>3000</TableCell>
-								</TableRow>
-							  </TableBody>
-							</Table>
-						),
-					},
-				  ]}
-				/>
-			</div>				
-				
-				
+	<FieldGroupIconButton
+	  ariaLabel="Search"
+	  variation="link"
+	  onClick={() => alert('Still developing, please press enter for now.')}
+	>
+	  <MdSearch />
+	</FieldGroupIconButton>
+}
 ***/
