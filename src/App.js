@@ -123,8 +123,8 @@ const theme: Theme = {
 				borderColor: { value: '{colors.blue.60}' },
 			},
 			_active: {
-				color: { value: '{colors.white}' },
-				backgroundColor: { value: '{colors.blue.90}' },
+				color: { value: '{colors.blue.90}' },
+				borderColor: { value: '{colors.blue.80}' },
 			},
 			_disabled: {
 				backgroundColor: { value: 'transparent' },
@@ -138,7 +138,7 @@ const theme: Theme = {
 					backgroundColor: { value: '{colors.red.60}' },
 				},
 				_focus: {
-					backgroundColor: { value: '{colors.blue.60}' },
+					backgroundColor: { value: '{colors.blue.80}' },
 				},
 				_active: {
 					backgroundColor: { value: '{colors.blue.90}' },
