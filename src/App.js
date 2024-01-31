@@ -175,9 +175,9 @@ const App = ({ signOut }) => {
 	const [devices, setDevices] = useState([]);
 	
 	const [samples, setSamples] = useState([]); // set samples as state variable and tie it to setSamples() function
-	const [showTables, setShowTables] = useState(false);
 	const [validIds, setIds] = useState([]);
-
+	const [showTables, setShowTables] = useState(false);
+	
 	useEffect(() => { // call fetchSamples() once on render
 		fetchSamples();
 	  }, []);
@@ -312,19 +312,19 @@ const App = ({ signOut }) => {
 			  ids = ids.replace(/ /g, ''); // remove spaces
 			  ids = ids.split(/,/); // tokenize string to create array of ids
 			  let myHTML = '';
-			  let myArr = [];
+			  let validIDs = [];
 			  let match = false;
 			  ids.map(id => {
 				  if (samples.get(id) !== undefined) {
 					match = true; // check to see if we have a match first, so we can make container for tables
 					setShowTables(true); // set state to show tables
-					myArr.push(id);
+					validIDs.push(id);
 				  }
 				  else {
 					alert('Failed to find the id you entered. Please check your entry and try again.')
 				  }
 				  if (match) {
-					  setIds(myArr); // store the valid ids in state
+					  setIds(validIDs); // store the valid ids in state
 				  }
 			  });
 		  } catch (error) {
@@ -522,7 +522,7 @@ const App = ({ signOut }) => {
 			<Card className="page-margin" variation="outlined">
 				<div className="margin-small">
 					<Heading className="heading-blue" level={4}>View Data Records:</Heading>
-					<p className="margin-small">Please enter your meter id(s). Separate by commas for multiple inputs:</p>
+					<p className="margin-small">Please enter your meter id(s). Separate by commas for multiple inputs</p>
 					<Flex>
 						<TextField
 							placeholder="00000, 00001, 00002"
