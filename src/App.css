@@ -10,7 +10,7 @@
 	margin: 1.5em 0 1.5em 0;
 }
 
-.margin-page {
+.page-margin {
 	margin: 1em;
 }
 
@@ -18,4 +18,19 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.horizontal {
+	display: flex;
+	align-items: center;
+}
+
+.right {
+	display: block;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.black-bg {
+	background-color: black;
 }

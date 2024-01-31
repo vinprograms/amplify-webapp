@@ -30,25 +30,30 @@ import { MdSearch } from 'react-icons/md';
 import { generateClient } from "aws-amplify/api";
 import { listSamples } from "./graphql/queries";
 
+import pslogo from './pslogo.png';
+
 const theme: Theme = {
   name: 'powersight-theme',
   tokens: {
     components: {
 		card: {
-			backgroundColor: { value: '{colors.neutral.10]}' },
+			backgroundColor: { value: '{colors.neutral.10}' },
 			outlined: {
 			  borderColor: { value: '{colors.black}' },
 			  borderRadius: { value: '{radii.small}' },
 			},
 		},
+		
 		heading: {
-			color: { value: '{colors.red.60}' },
+			color: { value: '{colors.white}' },
 			fontWeight: { value: '{fontWeights.semibold}' },
 			fontSize: { value: '{fontSizes.xl}' },
 		},
+		
 		text: {
 			color: { value: '{colors.black}' },
 		},
+		
 		tabs: {
 			borderColor: { value: '{colors.black}' },
 			borderRadius: { value: '{radii.xs}' },
@@ -74,6 +79,7 @@ const theme: Theme = {
 			  },
 			},
 		},
+		
 		table: {
 			row: {
 			  hover: {
@@ -88,7 +94,7 @@ const theme: Theme = {
 			header: {
 				color: { value: '{colors.blue.60}' },
 				fontSize: { value: '{fontSizes.medium}' },
-				fontWeight: { value: '{fontWeights.normal}' },
+				fontWeight: { value: '{fontWeights.medium}' },
 			},
 
 			data: {
@@ -97,17 +103,211 @@ const theme: Theme = {
 				fontWeight: { value: '{fontWeights.light}' },
 			},
 		},
+		
 		textfield: {
 			color: { value: '{colors.blue.80}' },
 			_focus: {
 				borderColor: { value: '{colors.red.60}' },
 			},
 		},
+		
+		button: {
+			color: { value: '{colors.red.60}' },
+			borderColor: { value: '{colors.red.80}' },
+			_hover: {
+				color: { value: '{colors.blue.60}' },
+				borderColor: { value: '{colors.blue.80}' },
+			},
+			_focus: {
+				color: { value: '{colors.blue.80}' },
+				borderColor: { value: '{colors.blue.60}' },
+			},
+			_active: {
+				color: { value: '{colors.white}' },
+				backgroundColor: { value: '{colors.blue.90}' },
+			},
+			_disabled: {
+				backgroundColor: { value: 'transparent' },
+				borderColor: { value: '{colors.neutral.30}' },
+			},
+			
+			// style the primary variation
+			primary: {
+				backgroundColor: { value: '{colors.blue.60}' },
+				_hover: {
+					backgroundColor: { value: '{colors.red.60}' },
+				},
+				_focus: {
+					backgroundColor: { value: '{colors.blue.60}' },
+				},
+				_active: {
+					backgroundColor: { value: '{colors.blue.90}' },
+				},
+				_disabled: {
+					backgroundColor: { value: 'transparent' },
+					borderColor: { value: '{colors.neutral.30}' },
+				},
+				error: {
+					backgroundColor: { value: '{colors.pink.10}' },
+					color: { value: '{colors.red.80}' },
+					_hover: {
+					  backgroundColor: { value: '#a51b34' },
+					},
+					_focus: {
+					  backgroundColor: { value: '#9a0c26' },
+					},
+					_active: {
+					  backgroundColor: { value: '#9a0c26' },
+					},
+				},
+			}
+		},
 	},
   },
 };
 
 const API = generateClient();
+
+const App = ({ signOut }) => {
+	
+	const [customers, setCustomers] = useState([]);
+	const [devices, setDevices] = useState([]);
+
+	useEffect(() => {
+		generateCustomers();
+	}, []);
+	
+	useEffect(() => {
+		generateDevices();
+	}, []);
+
+	async function generateCustomers() {
+		const customers = [];
+		const names = ["Vincent", "Ken", "Rich", "Ricky", "Grace", "Jason"]
+		const devices = ["PS3550-04286", "PS4550-04287", "PS5000-04288", "PS3550-04386", "PS4550-04387", "PS5000-04388"]
+		const count = 5;
+		
+		for (let i=0; i<count; i++) {
+			customers.push({
+			  id: i,
+			  name: names[i],
+			  company: "Summit Technology",
+			  devices: devices[i]
+			});
+		}
+		
+		setCustomers(customers);
+	}
+	
+	async function generateDevices() {
+		const devices = [];
+		const serials = ["04286", "04287", "04288", "04386", "04387", "04388"]
+		const models = ["PS3550", "PS4550", "PS5000", "PS3550", "PS4550", "PS5000"]
+		const customers = ["Vincent", "Ken", "Rich", "Ricky", "Grace", "Jason"]
+		const count = 5;
+		
+		for (let i=0; i<count; i++) {
+			devices.push({
+			  id: i,
+			  serial: serials[i],
+			  model: models[i],
+			  customer: customers[i]
+			});
+		}
+		
+		setDevices(devices);
+	}
+
+	return (
+		<ThemeProvider theme={theme}>
+			
+			<div className="page-margin black-bg horizontal" style={{padding: '0.75em 0em 0.75em 0em'}}>
+				<img style={{marginLeft: '0.25em'}} src={pslogo} alt="PowerSight Logo" />
+				<Heading level={4}>Administrator Console</Heading>
+			</div>
+			<Card className="page-margin" variation="outlined">
+				<div className="margin-small" style={{display: 'flex'}}>
+					<div>
+						<Heading className="heading-blue" level={5}>Customers</Heading>
+						<p className="margin-small">Total: {customers.length}</p>
+					</div>
+					<Button size="small" className="right">Manage</Button>
+				</div>
+				<div className="margin-small">
+					<Table highlightOnHover variation="bordered">
+						<TableHead>
+							<TableRow>
+								<TableCell as="th">ID</TableCell>
+								<TableCell as="th">Name</TableCell>
+								<TableCell as="th">Company</TableCell>
+								<TableCell as="th">Devices</TableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{
+								customers.map((customer) => {
+									return (
+										<TableRow>
+											<TableCell>{customer.id}</TableCell>
+											<TableCell>{customer.name}</TableCell>
+											<TableCell>{customer.company}</TableCell>
+											<TableCell>{customer.devices}</TableCell>
+										</TableRow>
+									);
+								})
+							}
+						</TableBody>
+					</Table>
+				</div>
+			</Card>
+			<Card className="page-margin" variation="outlined">
+				<div className="margin-small" style={{display: 'flex'}}>
+					<div>
+						<Heading className="heading-blue" level={5}>Devices</Heading>
+						<p className="margin-small">Total: {devices.length}</p>
+					</div>
+					<Button size="small" className="right">Manage</Button>
+				</div>
+				<div className="margin-small">
+					<Table highlightOnHover variation="bordered">
+						<TableHead>
+							<TableRow>
+								<TableCell as="th">ID</TableCell>
+								<TableCell as="th">Serial Number</TableCell>
+								<TableCell as="th">Model</TableCell>
+								<TableCell as="th">Customer</TableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{
+								devices.map((device) => {
+									return (
+										<TableRow>
+											<TableCell>{device.id}</TableCell>
+											<TableCell>{device.serial}</TableCell>
+											<TableCell style={{textAlign: 'center'}}>
+												{device.model} <br/>
+												<img src={require(`/${device.model}.png`)} alt={device.model}/>
+											</TableCell>
+											<TableCell>{device.customer}</TableCell>
+										</TableRow>
+									);
+								})
+							}
+						</TableBody>
+					</Table>
+				</div>
+			</Card>
+			<div className="margin-med center">
+				<Button variation="primary" size="large" onClick={signOut}>Sign Out</Button>
+			</div>
+		</ThemeProvider>
+	  );
+};
+
+export default withAuthenticator(App);
+
+/*
 
 const App = ({ signOut }) => {
   const [samples, setSamples] = useState([]); // set samples as state variable and tie it to setSamples() function
@@ -124,7 +324,7 @@ const App = ({ signOut }) => {
 	  data = data.replace(/[\"{}]/g, ''); // remove special characters that are part of JSON string
 	  const splitData = data.split(','); // tokenize string to create array of measurements
 	  const dataMap = new Map();
-	  splitData.map(data => { // iterate through tokenized string and create map of <"MEASUREMENT TYPE", VALUE>
+	  splitData.map(data => { // iterate through tokenized string and create map of ["MEASUREMENT TYPE" => VALUE]
 		  if (data.match(/T:/)) {
 			  data = data.replace(/T:/, '');
 			  dataMap.set("T", data);
@@ -209,8 +409,8 @@ const App = ({ signOut }) => {
 		  let match = false;
 		  ids.map(id => {
 			  if (samples.get(id) !== undefined) {
-				match = true;
-				setShowTables(true); // check to see if we have a match first, so we can make container for tables
+				match = true; // check to see if we have a match first, so we can make container for tables
+				setShowTables(true); // set state to show tables
 				myArr.push(id);
 			  }
 			  else {
@@ -251,7 +451,7 @@ const App = ({ signOut }) => {
 					</TableHead>
 					<TableBody>
 					{
-						samples.get(id).map((sample, i) => {
+						samples.get(id).map((sample, i) => {  // use samples [id => measurements] map to generate table data
 							return (
 								<TableRow>
 									<TableCell>
@@ -310,8 +510,8 @@ const App = ({ signOut }) => {
 			<Tabs.Container defaultValue="Tab 0" isLazy>
 				<Tabs.List spacing="equal" justifyContent="center" indicatorPosition="top">
 					{
-						validIds.map((id, i) => {
-							return (
+						validIds.map((id, i) => { // create tab buttons
+							return ( 
 								<Tabs.Item value={'Tab ' + i} key={i}>
 									{id}
 								</Tabs.Item>
@@ -320,7 +520,7 @@ const App = ({ signOut }) => {
 					}
 				  </Tabs.List>
 					{
-						validIds.map((id, i) => {
+						validIds.map((id, i) => { // create tab content
 							return (
 								<Tabs.Panel value={'Tab ' + i} key={i}>
 									{makeTables(id)}
@@ -347,10 +547,10 @@ const App = ({ signOut }) => {
 						placeholder="00000, 00001, 00002"
 						onKeyPress={(e) => {
 							if (e.key === 'Enter') {
-							    validateId(e.currentTarget.value);
+							    validateId(e.currentTarget.value); // check if user input corresponds to valid meter ids
 							}
 						}}
-						innerEndComponent={
+						innerEndComponent={ // generate magnifying glass button
 							<FieldGroupIconButton
 							  ariaLabel="Search"
 							  variation="link"
@@ -363,7 +563,7 @@ const App = ({ signOut }) => {
 				</Flex>
 			</div>
 		    {
-				showTables && validIds.length && makeTabs()
+				showTables && validIds.length && makeTabs() // check for showTables state and that we have hits for user entered ids
 			}
 		</Card>
 		<div className="margin-med center">
@@ -373,7 +573,7 @@ const App = ({ signOut }) => {
   );
 };
 
-export default withAuthenticator(App);
+/*
 
 /***
 TUTORIALS:
