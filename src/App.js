@@ -176,7 +176,7 @@ const App = ({ signOut }) => {
 	const [validIds, setIds] = useState([]); 
 	const [showTables, setShowTables] = useState(false);
 	const [currentUser, setCurrentUser] = useState([]); 
-	const [date, setDate] = useState(new Date().toDateString());
+	const [date, setDate] = useState(new Date());
 	
 	useEffect(() => { // call fetchSamples() once on render
 		fetchSamples();
@@ -185,6 +185,13 @@ const App = ({ signOut }) => {
 	useEffect(() => {
 		getUser();
 	}, []);
+	
+	useEffect(() => { // update time every second
+		let timer = setInterval(()=>setDate(new Date()), 1000);
+		return function clean() {
+			clearInterval(timer);
+		}
+	});
 	
 	async function getUser() {
 	  try {
@@ -408,7 +415,7 @@ const App = ({ signOut }) => {
 	  function makeTabs() {
 		  return (
 			<div className="margin-med">
-				<Heading className="heading-blue" level={4}>Analyzer ID:</Heading>
+				<Heading className="blue-txt" level={4}>Analyzer ID:</Heading>
 				<Tabs.Container defaultValue="Tab 0" isLazy>
 					<Tabs.List spacing="equal" justifyContent="center" indicatorPosition="top">
 						{
@@ -443,7 +450,7 @@ const App = ({ signOut }) => {
 			</div>
 			<div className="page-margin">
 				<Heading className="blue-txt" level={4}>Welcome {currentUser.username}!</Heading>
-				<Heading className="blue-txt" level={4}>Today's date is: {date}.</Heading>
+				<Heading className="blue-txt" level={4}>Today's date is: {date.toDateString()} at {date.toLocaleTimeString()}.</Heading>
 			</div>
 			<Card className="page-margin" variation="outlined">
 				<div className="margin-small">
