@@ -450,7 +450,7 @@ const App = ({ signOut }) => {
 			</div>
 			<div className="page-margin">
 				<Heading className="blue-txt" level={4}>Welcome {currentUser.username}!</Heading>
-				<Heading className="blue-txt" level={4}>Today's date is: {date.toDateString()} at {date.toLocaleTimeString()}.</Heading>
+				<Heading className="blue-txt" level={4}>{date.toDateString()}, {date.toLocaleTimeString()}.</Heading>
 			</div>
 			<Card className="page-margin" variation="outlined">
 				<div className="margin-small">

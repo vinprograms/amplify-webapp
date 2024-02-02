@@ -2,6 +2,10 @@
   color: var(--amplify-colors-blue-80);
 }
 
+.red-txt {
+  color: var(--amplify-colors-red-60);
+}
+
 .margin-small {
 	margin: 0.5em 0 0.5em 0;
 }
