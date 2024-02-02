@@ -29,7 +29,9 @@ import {
 import { MdSearch } from 'react-icons/md';
 import { generateClient } from "aws-amplify/api";
 import { listSamples } from "./graphql/queries";
-
+import { 
+  getCurrentUser,
+} from 'aws-amplify/auth';
 import pslogo from './pslogo.png';
 
 const theme: Theme = {
@@ -173,10 +175,26 @@ const App = ({ signOut }) => {
 	const [samples, setSamples] = useState([]); // set samples as state variable and tie it to setSamples() function
 	const [validIds, setIds] = useState([]); 
 	const [showTables, setShowTables] = useState(false);
+	const [currentUser, setCurrentUser] = useState([]); 
+	const [date, setDate] = useState(new Date().toDateString());
 	
 	useEffect(() => { // call fetchSamples() once on render
 		fetchSamples();
 	  }, []);
+	
+	useEffect(() => {
+		getUser();
+	}, []);
+	
+	async function getUser() {
+	  try {
+		const myUser = await getCurrentUser();
+		setCurrentUser(myUser);
+		console.log("user =", myUser);
+	  } catch (err) {
+		console.log(err);
+	  }
+	}
 
 	function parseData(data) {
 		  data = data.replace(/[\"{}]/g, ''); // remove special characters that are part of JSON string
@@ -300,7 +318,7 @@ const App = ({ signOut }) => {
 					validIDs.push(id);
 				  }
 				  else {
-					alert('Failed to find the id you entered. Please check your entry and try again.')
+					alert('Failed to find Analyzer ID: ' + id + '. Please check the ID and try again.')
 				  }
 				  if (match) {
 					  setIds(validIDs); // store the valid ids in state
@@ -390,7 +408,7 @@ const App = ({ signOut }) => {
 	  function makeTabs() {
 		  return (
 			<div className="margin-med">
-				<Heading className="heading-blue" level={4}>Meter ID:</Heading>
+				<Heading className="heading-blue" level={4}>Analyzer ID:</Heading>
 				<Tabs.Container defaultValue="Tab 0" isLazy>
 					<Tabs.List spacing="equal" justifyContent="center" indicatorPosition="top">
 						{
@@ -423,10 +441,14 @@ const App = ({ signOut }) => {
 				<img style={{marginLeft: '0.25em'}} src={pslogo} alt="PowerSight Logo" />
 				<Heading level={4}>Administrator Console, Version Alpha 1.0</Heading>
 			</div>
+			<div className="page-margin">
+				<Heading className="blue-txt" level={4}>Welcome {currentUser.username}!</Heading>
+				<Heading className="blue-txt" level={4}>Today's date is: {date}.</Heading>
+			</div>
 			<Card className="page-margin" variation="outlined">
 				<div className="margin-small">
-					<Heading className="heading-blue" level={4}>View Data Records:</Heading>
-					<p className="margin-small">Please enter your meter id(s). Separate by commas for multiple inputs</p>
+					<Heading className="blue-txt" level={4}>View Data Records:</Heading>
+					<p className="margin-small">Please enter your analyzer id(s). Separate by commas for multiple inputs</p>
 					<Flex>
 						<TextField
 							placeholder="00000, 00001, 00002"
