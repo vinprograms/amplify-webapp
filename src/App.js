@@ -175,8 +175,12 @@ const App = ({ signOut }) => {
 	const [devices, setDevices] = useState([]);
 	
 	const [samples, setSamples] = useState([]); // set samples as state variable and tie it to setSamples() function
-	const [validIds, setIds] = useState([]);
+	const [validIds, setIds] = useState([]); 
 	const [showTables, setShowTables] = useState(false);
+	
+	const [showInitial, setShowInitial] = useState(true); // show the initial admin console screen
+	const [showManageCustomers, setShowManageCustomers] = useState(false); // show manage customers
+	const [showManageDevices, setShowManageDevices] = useState(false); // show manage devices
 	
 	useEffect(() => { // call fetchSamples() once on render
 		fetchSamples();
@@ -284,22 +288,50 @@ const App = ({ signOut }) => {
 		  return dataMap;
 	  }
 	  
-	  function parseSample(samples, myMap) { // create a map of <id, array>
+	  function parseSamples(samples, myMap) { // store a map of map->id map->samples array
 		  samples.map(sample => {
 			  if (myMap.get(sample.device_id) === undefined) { // if map doesn't contain meter id yet, initialize with <id, array[map]>
 				const dataArr = [];
 				myMap.set(sample.device_id, dataArr); // elements are of the form <ID, array[map<measurement,data>]>
 			  }
-			  myMap.get(sample.device_id).push(parseData(sample.device_data)); // add map of measurements to map array
+			  myMap.get(sample.device_id).push(parseData(sample.device_data)); // add map of measurements to ID map
 		  });
+	  }
+
+	  async function assembleSamples(next, myMap) {
+		  while (!(next === undefined) && !(next === null)) {
+			try {
+				const apiData = await API.graphql({
+					query: listSamples,
+					variables: {
+						nextToken: next,
+						limit: 100,
+					}
+				});
+				const samplesFromAPI = apiData.data.listSamples.items;
+				parseSamples(samplesFromAPI, myMap);
+				next = apiData.data.listSamples.nextToken;
+			} catch (error) {
+				console.log('Error on fetching samples: ', error);
+			}
+		  }
 	  }
 
 	  async function fetchSamples() {
 		try {
-			const apiData = await API.graphql({ query: listSamples }, {limit: 1000});
+			const apiData = await API.graphql({
+				query: listSamples,
+				variables: {
+					limit: 100,
+				}
+			});
 			const samplesFromAPI = apiData.data.listSamples.items;
 			const sampleMap = new Map();
-			parseSample(samplesFromAPI, sampleMap);
+			let nextToken = apiData.data.listSamples.nextToken;
+			
+			parseSamples(samplesFromAPI, sampleMap);
+			await assembleSamples(nextToken, sampleMap);
+			
 			console.log("samples = ", sampleMap);
 			setSamples(sampleMap);
 		} catch (error) {
@@ -440,9 +472,9 @@ const App = ({ signOut }) => {
 		  );
 	  }
 	  
-	  return (
+	  return(
 		<ThemeProvider theme={theme}>
-		<div className="page-margin black-bg horizontal" style={{padding: '0.75em 0em 0.75em 0em'}}>
+			<div className="page-margin black-bg horizontal" style={{padding: '0.75em 0em 0.75em 0em'}}>
 				<img style={{marginLeft: '0.25em'}} src={pslogo} alt="PowerSight Logo" />
 				<Heading level={4}>Administrator Console, Version 1.0</Heading>
 			</div>
@@ -551,8 +583,8 @@ const App = ({ signOut }) => {
 				<Button variation="primary" size="large" onClick={signOut}>Sign Out</Button>
 			</div>
 		</ThemeProvider>
-	  );
-	};
+	);
+};
 
 export default withAuthenticator(App);
 
